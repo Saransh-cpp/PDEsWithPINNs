@@ -30,7 +30,7 @@ def func(x):
         C
         * np.sin(m * np.pi * x[:, 0:1] / a)
         * np.sin(n * np.pi * x[:, 1:2] / b)
-        * np.exp(-2 * k * np.pi ** 2 * x[:, 2:3])  # (m^2/a^2  +  n^2/b^2) = 1
+        * np.exp(-k * np.pi ** 2 * x[:, 2:3])  # (m^2/a^2  +  n^2/b^2) = 1
     )
 
 
@@ -96,25 +96,25 @@ dde.saveplot(
 )
 
 dat_to_csv(
-    "../dat_data/heat_2D.dat",
-    "../csv_data/heat_2D.csv",
-    ["x", "y", "t", "u_true", "u_pred"],
+    dat_file_name="../dat_data/heat_2D.dat",
+    csv_file_name="../csv_data/heat_2D.csv",
+    columns=["x", "y", "t", "u_true", "u_pred"],
 )
 scatter_plot_3D(
-    "../csv_data/heat_2D.csv",
-    ["y", "t", "u_true", "u_pred"],
-    "y",
-    "t",
-    "u_true",
-    "u_pred",
+    csv_file_name="../csv_data/heat_2D.csv",
+    columns=["y", "t", "u_true", "u_pred"],
+    x_axis="y",
+    z_axis="t",
+    u_true="u_true",
+    u_pred="u_pred",
     labels=["y", "u_true / u_pred", "t"],
 )
 scatter_plot_3D(
-    "../csv_data/heat_2D.csv",
-    ["x", "t", "u_true", "u_pred"],
-    "x",
-    "t",
-    "u_true",
-    "u_pred",
+    csv_file_name="../csv_data/heat_2D.csv",
+    columns=["x", "t", "u_true", "u_pred"],
+    x_axis="x",
+    z_axis="t",
+    u_true="u_true",
+    u_pred="u_pred",
     labels=["x", "u_true / u_pred", "t"],
 )

@@ -90,10 +90,11 @@ dat_to_csv(
     "../dat_data/heat_1D.dat", "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"]
 )
 scatter_plot_3D(
-    "../csv_data/heat_1D.csv",
-    ["x", "t", "u_true", "u_pred"],
-    "x",
-    "t",
-    "u_true",
-    "u_pred",
+    csv_file_name="../csv_data/heat_1D.csv",
+    columns=["x", "t", "u_true", "u_pred"],
+    x_axis="x",
+    z_axis="t",
+    u_true="u_true",
+    u_pred="u_pred",
+    labels=["x", "u_true / u_pred", "t"],
 )
