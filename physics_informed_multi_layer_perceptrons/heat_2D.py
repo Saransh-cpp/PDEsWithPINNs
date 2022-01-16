@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '../utils/')
+
 import numpy as np
 import deepxde as dde
 from deepxde.backend import tf
@@ -76,20 +79,42 @@ net = dde.maps.FNN(layer_size, activation, initializer)
 model = dde.Model(data, net)
 
 model.compile(
-    "adam",
-    lr=0.001,
-    metrics=["l2 relative error"],
+    "adam", lr=0.001, metrics=["l2 relative error"],
 )
 model.train(epochs=20000)
 model.compile(
-    "L-BFGS",
-    metrics=["l2 relative error"],
+    "L-BFGS", metrics=["l2 relative error"],
 )
 losshistory, train_state = model.train()
 
-dde.saveplot(losshistory, train_state, issave=True, isplot=True)
+dde.saveplot(
+    losshistory,
+    train_state,
+    issave=True,
+    isplot=True,
+    test_fname="../dat_data/heat_2D.dat",
+)
 
-dat_to_csv("test.dat", "heat_2D_test.csv", ["x", "y", "t", "u_true", "u_pred"])
+dat_to_csv(
+    "../dat_data/heat_2D.dat",
+    "../csv_data/heat_2D.csv",
+    ["x", "y", "t", "u_true", "u_pred"],
+)
 scatter_plot_3D(
-    "heat_2D_test.csv", ["y", "t", "u_true", "u_pred"], "y", "t", "u_true", "u_pred", labels=["y", "u_true / u_pred", "t"]
+    "../csv_data/heat_2D.csv",
+    ["y", "t", "u_true", "u_pred"],
+    "y",
+    "t",
+    "u_true",
+    "u_pred",
+    labels=["y", "u_true / u_pred", "t"],
+)
+scatter_plot_3D(
+    "../csv_data/heat_2D.csv",
+    ["x", "t", "u_true", "u_pred"],
+    "x",
+    "t",
+    "u_true",
+    "u_pred",
+    labels=["x", "u_true / u_pred", "t"],
 )

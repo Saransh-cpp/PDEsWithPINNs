@@ -55,11 +55,7 @@ d_bc_f_and_b = dde.DirichletBC(
     spatio_temporal_domain, lambda x: 0, boundary_front_and_back
 )
 n_bc = dde.NeumannBC(spatio_temporal_domain, lambda X: 0, boundary_r_and_l)
-ic = dde.IC(
-    spatio_temporal_domain,
-    lambda x: 0,
-    lambda _, on_initial: on_initial,
-)
+ic = dde.IC(spatio_temporal_domain, lambda x: 0, lambda _, on_initial: on_initial,)
 
 data = dde.data.TimePDE(
     spatio_temporal_domain,

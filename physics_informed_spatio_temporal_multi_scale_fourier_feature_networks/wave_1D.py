@@ -68,7 +68,7 @@ data = dde.data.TimePDE(
     num_boundary=1000,
     num_initial=1000,
     num_test=10000,
-    solution=func
+    solution=func,
 )
 
 layer_size = [2] + [100] * 3 + [1]
@@ -79,16 +79,14 @@ net = dde.nn.STMsFFN(
 )
 
 model = dde.Model(data, net)
-model.compile("adam", lr=0.001, metrics=["l2 relative error"],)
+model.compile(
+    "adam", lr=0.001, metrics=["l2 relative error"],
+)
 losshistory, train_state = model.train(0)
 model.compile(
-    "adam",
-    lr=0.001,
-    metrics=["l2 relative error"],
+    "adam", lr=0.001, metrics=["l2 relative error"],
 )
-losshistory, train_state = model.train(
-    epochs=10000,
-)
+losshistory, train_state = model.train(epochs=10000,)
 
 dde.saveplot(losshistory, train_state, issave=True, isplot=True)
 

@@ -69,21 +69,31 @@ model = dde.Model(data, net)
 
 # Build and train the model:
 model.compile(
-    "adam",
-    lr=1e-3,
-    metrics=["l2 relative error"],
+    "adam", lr=1e-3, metrics=["l2 relative error"],
 )
 model.train(epochs=20000)
 model.compile(
-    "L-BFGS",
-    metrics=["l2 relative error"],
+    "L-BFGS", metrics=["l2 relative error"],
 )
 losshistory, train_state = model.train()
 
 # Plot/print the results
-dde.saveplot(losshistory, train_state, issave=True, isplot=True, test_fname="../dat_data/heat_1D.dat")
+dde.saveplot(
+    losshistory,
+    train_state,
+    issave=True,
+    isplot=True,
+    test_fname="../dat_data/heat_1D.dat",
+)
 
-dat_to_csv("../dat_data/heat_1D.dat", "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"])
+dat_to_csv(
+    "../dat_data/heat_1D.dat", "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"]
+)
 scatter_plot_3D(
-    "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"], "x", "t", "u_true", "u_pred"
+    "../csv_data/heat_1D.csv",
+    ["x", "t", "u_true", "u_pred"],
+    "x",
+    "t",
+    "u_true",
+    "u_pred",
 )
