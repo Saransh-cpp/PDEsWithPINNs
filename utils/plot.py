@@ -12,7 +12,7 @@ def scatter_plot_3D(
     u_true = df[u_true]
     u_pred = df[u_pred]
 
-    fig = plt.figure()
+    _ = plt.figure()
     ax = plt.axes(projection="3d")
 
     ax.scatter(x, u_pred, z, "green")

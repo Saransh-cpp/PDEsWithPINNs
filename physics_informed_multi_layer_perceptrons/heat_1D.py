@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '../utils/')
+
 import numpy as np
 import pandas as pd
 import deepxde as dde
@@ -5,6 +8,7 @@ from deepxde.backend import tf
 import matplotlib.pyplot as plt
 from plot import scatter_plot_3D
 from dat_to_csv import dat_to_csv
+
 
 a = 0.4  # Thermal diffusivity
 L = 1  # Length of the bar
@@ -77,9 +81,9 @@ model.compile(
 losshistory, train_state = model.train()
 
 # Plot/print the results
-dde.saveplot(losshistory, train_state, issave=True, isplot=True)
+dde.saveplot(losshistory, train_state, issave=True, isplot=True, test_fname="../dat_data/heat_1D.dat")
 
-dat_to_csv("test.dat", "heat_1D_test.csv", ["x", "t", "u_true", "u_pred"])
+dat_to_csv("../dat_data/heat_1D.dat", "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"])
 scatter_plot_3D(
-    "heat_1D_test.csv", ["x", "t", "u_true", "u_pred"], "x", "t", "u_true", "u_pred"
+    "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"], "x", "t", "u_true", "u_pred"
 )
