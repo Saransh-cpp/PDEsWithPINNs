@@ -11,14 +11,13 @@ import pandas as pd
 import deepxde as dde
 from deepxde.backend import tf
 import matplotlib.pyplot as plt
-from plot import scatter_plot_3D
+from plot import scatter_plot_3D, plot_2D
 from dat_to_csv import dat_to_csv
 
 
-A = 2
-c = 10
-L = 1
-C = 1
+c = 10  # wave equation constant
+L = 1   # Length of string
+C = 1   # Fourier constant
 n = 1
 m = 1
 
@@ -67,11 +66,8 @@ data = dde.data.TimePDE(
     solution=sol,
 )
 
-layer_size = [2] + [100] * 3 + [1]
-activation = "tanh"
-initializer = "Glorot uniform"
 net = dde.nn.STMsFFN(
-    layer_size, activation, initializer, sigmas_x=[1], sigmas_t=[1, 10]
+    [2] + [100] * 3 + [1], "tanh", "Glorot uniform", sigmas_x=[1], sigmas_t=[1, 10]
 )
 net.apply_feature_transform(lambda x: (x - 0.5) * 2 * np.sqrt(3))
 
@@ -108,4 +104,31 @@ scatter_plot_3D(
     u_true="u_true",
     u_pred="u_pred",
     labels=["x", "u_true / u_pred", "t"],
+)
+plot_2D(
+    csv_file_name="../csv_data/wave_1D.csv",
+    columns=["x", "t", "u_true", "u_pred"],
+    x_axis="x",
+    u_true="u_true",
+    u_pred="u_pred",
+    t_values=[
+        0,
+        0.0299999993294477,
+        0.0700000002980232,
+        0.100000001490116,
+        0.129999995231628,
+        0.170000001788139,
+        0.200000002980232,
+        0.230000004172325,
+        0.270000010728836,
+        0.300000011920928,
+        # 0.400000005960464,
+        # 0.5,
+        # 0.600000023841857,
+        # 0.699999988079071,
+        # 0.800000011920928,
+        # 0.899999976158142,
+        # 1,
+    ],
+    y_lim=(-1, 1)
 )

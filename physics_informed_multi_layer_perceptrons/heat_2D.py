@@ -34,25 +34,11 @@ def func(x):
     )
 
 
-def boundary_u(x, on_boundary):
-    return on_boundary and np.isclose(x[1], 1)
-
-
-def boundary_b(x, on_boundary):
-    return on_boundary and np.isclose(x[1], 0)
-
-
-def boundary_r_and_l(x, on_boundary):
-    return on_boundary and (np.isclose(x[0], 0) or np.isclose(x[0], 1))
-
-
 spatial_domain = dde.geometry.Rectangle(xmin=[0, 0], xmax=[a, b])
 temporal_domain = dde.geometry.TimeDomain(0, 1)
 spatio_temporal_domain = dde.geometry.GeometryXTime(spatial_domain, temporal_domain)
 
-d_bc_b = dde.DirichletBC(spatio_temporal_domain, lambda x: 0, boundary_b)
-d_bc_u = dde.DirichletBC(spatio_temporal_domain, lambda x: 0, boundary_u)
-d_bc_rl = dde.DirichletBC(spatio_temporal_domain, lambda x: 0, boundary_r_and_l)
+bc = dde.DirichletBC(spatio_temporal_domain, lambda x: 0, lambda _, on_boundary: on_boundary)
 ic = dde.IC(
     spatio_temporal_domain,
     lambda x: np.sin(n * np.pi * x[:, 0:1] / a),
@@ -63,11 +49,11 @@ ic = dde.IC(
 data = dde.data.TimePDE(
     spatio_temporal_domain,
     pde,
-    [d_bc_b, d_bc_u, d_bc_rl, ic],
+    [bc, ic],
     num_domain=2540,
-    num_boundary=1000,
-    num_initial=1000,
-    num_test=2540,
+    num_boundary=500,
+    num_initial=500,
+    num_test=10000,
     solution=func,
 )
 
@@ -81,7 +67,7 @@ model = dde.Model(data, net)
 model.compile(
     "adam", lr=0.001, metrics=["l2 relative error"],
 )
-model.train(epochs=20000)
+model.train(epochs=10000)
 model.compile(
     "L-BFGS", metrics=["l2 relative error"],
 )

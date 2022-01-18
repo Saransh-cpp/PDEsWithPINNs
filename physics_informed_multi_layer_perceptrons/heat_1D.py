@@ -1,13 +1,14 @@
 import sys
-sys.path.insert(0, '../utils/')
+
+sys.path.insert(0, "../utils/")
 
 import numpy as np
 import pandas as pd
 import deepxde as dde
 from deepxde.backend import tf
 import matplotlib.pyplot as plt
-from plot import scatter_plot_3D
 from dat_to_csv import dat_to_csv
+from plot import scatter_plot_3D, plot_2D
 
 
 a = 0.4  # Thermal diffusivity
@@ -59,19 +60,19 @@ data = dde.data.TimePDE(
     pde,
     [bc, ic],
     num_domain=2540,
-    num_boundary=300,
-    num_initial=450,
+    num_boundary=80,
+    num_initial=160,
     num_test=2540,
     solution=func,
 )
-net = dde.nn.FNN([2] + [32] * 3 + [1], "tanh", "Glorot normal")
+net = dde.nn.FNN([2] + [16] * 3 + [1], "tanh", "Glorot normal")
 model = dde.Model(data, net)
 
 # Build and train the model:
 model.compile(
     "adam", lr=1e-3, metrics=["l2 relative error"],
 )
-model.train(epochs=20000)
+model.train(epochs=10000)
 model.compile(
     "L-BFGS", metrics=["l2 relative error"],
 )
@@ -97,4 +98,24 @@ scatter_plot_3D(
     u_true="u_true",
     u_pred="u_pred",
     labels=["x", "u_true / u_pred", "t"],
+)
+plot_2D(
+    csv_file_name="../csv_data/heat_1D.csv",
+    columns=["x", "t", "u_true", "u_pred"],
+    x_axis="x",
+    u_true="u_true",
+    u_pred="u_pred",
+    t_values=[
+        0,
+        0.100000001490116,
+        0.200000002980232,
+        0.300000011920928,
+        0.400000005960464,
+        0.5,
+        0.600000023841857,
+        0.699999988079071,
+        0.800000011920928,
+        0.899999976158142,
+        1,
+    ],
 )
