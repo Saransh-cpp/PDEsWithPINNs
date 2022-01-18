@@ -1,6 +1,6 @@
 __pycache__/
 tf1/
 .env/
-test.data
+test.dat
 train.dat
 loss.dat
