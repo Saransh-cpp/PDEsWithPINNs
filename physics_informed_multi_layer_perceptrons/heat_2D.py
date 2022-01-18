@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, '../utils/')
+
+sys.path.insert(0, "../utils/")
 
 import numpy as np
 import deepxde as dde
@@ -38,7 +39,9 @@ spatial_domain = dde.geometry.Rectangle(xmin=[0, 0], xmax=[a, b])
 temporal_domain = dde.geometry.TimeDomain(0, 1)
 spatio_temporal_domain = dde.geometry.GeometryXTime(spatial_domain, temporal_domain)
 
-bc = dde.DirichletBC(spatio_temporal_domain, lambda x: 0, lambda _, on_boundary: on_boundary)
+bc = dde.DirichletBC(
+    spatio_temporal_domain, lambda x: 0, lambda _, on_boundary: on_boundary
+)
 ic = dde.IC(
     spatio_temporal_domain,
     lambda x: np.sin(n * np.pi * x[:, 0:1] / a),

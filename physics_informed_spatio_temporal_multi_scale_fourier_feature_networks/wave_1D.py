@@ -4,6 +4,7 @@ References:
     https://github.com/PredictiveIntelligenceLab/MultiscalePINNs.
 """
 import sys
+
 sys.path.insert(0, "../utils/")
 
 import numpy as np
@@ -16,8 +17,8 @@ from dat_to_csv import dat_to_csv
 
 
 c = 10  # wave equation constant
-L = 1   # Length of string
-C = 1   # Fourier constant
+L = 1  # Length of string
+C = 1  # Fourier constant
 n = 1
 m = 1
 
@@ -130,5 +131,5 @@ plot_2D(
         # 0.899999976158142,
         # 1,
     ],
-    y_lim=(-1, 1)
+    y_lim=(-1, 1),
 )

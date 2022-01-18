@@ -70,7 +70,7 @@ data = dde.data.TimePDE(
     num_boundary=360,
     num_initial=360,
     num_test=10000,
-    solution=sol
+    solution=sol,
 )
 
 net = dde.nn.STMsFFN(
