@@ -54,7 +54,11 @@ ic_1 = dde.IC(
     lambda x: np.sin(n * np.pi * x[:, 0:1] / L),
     lambda _, on_initial: on_initial,
 )
-ic_2 = dde.NeumannBC(geomtime, lambda x: 0, boundary_initial)
+ic_2 = dde.OperatorBC(
+    geomtime,
+    lambda x, y, _: dde.grad.jacobian(y, x, i=0, j=1),
+    boundary_initial,
+)
 
 data = dde.data.TimePDE(
     geomtime,
@@ -74,7 +78,7 @@ net.apply_feature_transform(lambda x: (x - 0.5) * 2 * np.sqrt(3))
 
 model = dde.Model(data, net)
 initial_losses = get_initial_loss(model)
-loss_weights = 5 / (initial_losses + 1e-3)
+loss_weights = 5 / initial_losses
 losshistory, train_state = model.train(0)
 model.compile(
     "adam",
