@@ -6,7 +6,7 @@ import numpy as np
 import deepxde as dde
 from deepxde.backend import tf
 import matplotlib.pyplot as plt
-from plot import scatter_plot_3D
+from plot import plot_3D, plot_2D
 from dat_to_csv import dat_to_csv
 
 
@@ -89,7 +89,7 @@ dat_to_csv(
     csv_file_name="../csv_data/heat_2D.csv",
     columns=["x", "y", "t", "u_true", "u_pred"],
 )
-scatter_plot_3D(
+plot_3D(
     csv_file_name="../csv_data/heat_2D.csv",
     columns=["y", "t", "u_true", "u_pred"],
     x_axis="y",
@@ -98,7 +98,7 @@ scatter_plot_3D(
     u_pred="u_pred",
     labels=["y", "u_true / u_pred", "t"],
 )
-scatter_plot_3D(
+plot_3D(
     csv_file_name="../csv_data/heat_2D.csv",
     columns=["x", "t", "u_true", "u_pred"],
     x_axis="x",

@@ -8,7 +8,7 @@ import deepxde as dde
 from deepxde.backend import tf
 import matplotlib.pyplot as plt
 from dat_to_csv import dat_to_csv
-from plot import scatter_plot_3D, plot_2D
+from plot import plot_3D, plot_2D
 
 
 a = 0.4  # Thermal diffusivity
@@ -90,7 +90,7 @@ dde.saveplot(
 dat_to_csv(
     "../dat_data/heat_1D.dat", "../csv_data/heat_1D.csv", ["x", "t", "u_true", "u_pred"]
 )
-scatter_plot_3D(
+plot_3D(
     csv_file_name="../csv_data/heat_1D.csv",
     columns=["x", "t", "u_true", "u_pred"],
     x_axis="x",

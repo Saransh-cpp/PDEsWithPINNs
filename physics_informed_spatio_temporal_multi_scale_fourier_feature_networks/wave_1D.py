@@ -12,7 +12,7 @@ import pandas as pd
 import deepxde as dde
 from deepxde.backend import tf
 import matplotlib.pyplot as plt
-from plot import scatter_plot_3D, plot_2D
+from plot import plot_3D, plot_2D
 from dat_to_csv import dat_to_csv
 
 
@@ -56,7 +56,7 @@ ic_1 = dde.IC(
 )
 ic_2 = dde.OperatorBC(
     geomtime,
-    lambda x, y, _: dde.grad.jacobian(y, x, i=0, j=1),
+    lambda x, u, _: dde.grad.jacobian(u, x, i=0, j=1),
     boundary_initial,
 )
 
@@ -101,7 +101,7 @@ dde.saveplot(
 dat_to_csv(
     "../dat_data/wave_1D.dat", "../csv_data/wave_1D.csv", ["x", "t", "u_true", "u_pred"]
 )
-scatter_plot_3D(
+plot_3D(
     csv_file_name="../csv_data/wave_1D.csv",
     columns=["x", "t", "u_true", "u_pred"],
     x_axis="x",

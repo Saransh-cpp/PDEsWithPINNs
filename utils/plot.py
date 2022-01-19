@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def scatter_plot_3D(
-    csv_file_name, columns, x_axis, z_axis, u_true, u_pred, labels=["x", "y", "z"]
+def plot_3D(
+    csv_file_name, columns, x_axis, z_axis, u_true, u_pred, labels=["x", "y", "z"], plt_type="scatter",
 ):
     df = pd.read_csv(csv_file_name, usecols=columns)
     x = df[x_axis]
@@ -15,9 +15,12 @@ def scatter_plot_3D(
     _ = plt.figure()
     ax = plt.axes(projection="3d")
 
-    ax.scatter(x, u_pred, z, "green")
-
-    ax.scatter(x, u_true, z, cmap="viridis")
+    if plt_type == "scatter":
+        ax.scatter(x, u_pred, z, "green")
+        ax.scatter(x, u_true, z, cmap="viridis")
+    elif plt_type == "interpolated":
+        ax.plot(x, u_pred, z, "--")
+        ax.plot(x, u_true, z, "**")
 
     ax.set_xlabel(labels[0])
     ax.set_ylabel(labels[1])

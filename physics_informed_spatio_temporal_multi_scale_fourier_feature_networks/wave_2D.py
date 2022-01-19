@@ -7,12 +7,11 @@ import pandas as pd
 import deepxde as dde
 from deepxde.backend import tf
 import matplotlib.pyplot as plt
-from plot import scatter_plot_3D
+from plot import plot_3D, plot_2D
 from dat_to_csv import dat_to_csv
 
 
 c = 10  # wave equation constant
-L = 1  # Length of string
 C = 4 / np.pi  # Fourier constant
 n = 1
 m = 1
@@ -26,7 +25,7 @@ def pde(x, u):
     u_tt = dde.grad.hessian(u, x, i=2, j=2)
     u_xx = dde.grad.hessian(u, x, i=0, j=0)
     u_yy = dde.grad.hessian(u, x, i=1, j=1)
-    return u_tt - c * (u_xx + u_yy)
+    return u_tt - ((c ** 2) * (u_xx + u_yy))
 
 
 def sol(x):
@@ -57,12 +56,12 @@ d_bc = dde.DirichletBC(
 )
 ic = dde.IC(
     spatio_temporal_domain,
-    lambda x: np.sin(n * np.pi * x[:, 0:1] / L),
+    lambda x: np.sin(n * np.pi * x[:, 0:1] / a),
     lambda _, on_initial: on_initial,
 )
 ic_2 = dde.OperatorBC(
     spatio_temporal_domain,
-    lambda x, y, _: dde.grad.jacobian(y, x, i=0, j=1),
+    lambda x, u, _: dde.grad.jacobian(u, x, i=0, j=1),
     boundary_init,
 )
 
@@ -78,14 +77,18 @@ data = dde.data.TimePDE(
 )
 
 net = dde.nn.STMsFFN(
-    [3] + [100] * 3 + [1], "tanh", "Glorot uniform", sigmas_x=[10, 20, 30], sigmas_t=[10, 20, 30]
+    [3] + [100] * 3 + [300] * 2 + [100] * 2 + [1],
+    "tanh",
+    "Glorot uniform",
+    sigmas_x=[50, 100, 200],
+    sigmas_t=[50, 100, 200],
 )
 
 net.apply_feature_transform(lambda x: (x - 0.5) * 2 * np.sqrt(3))
 
 model = dde.Model(data, net)
 initial_losses = get_initial_loss(model)
-loss_weights = 1 / (initial_losses)
+loss_weights = 1 / (2 * initial_losses)
 losshistory, train_state = model.train(0)
 model.compile(
     "adam",
@@ -110,7 +113,7 @@ dat_to_csv(
     csv_file_name="../csv_data/wave_2D.csv",
     columns=["x", "y", "t", "u_true", "u_pred"],
 )
-scatter_plot_3D(
+plot_3D(
     csv_file_name="../csv_data/wave_2D.csv",
     columns=["y", "t", "u_true", "u_pred"],
     x_axis="y",
@@ -119,7 +122,7 @@ scatter_plot_3D(
     u_pred="u_pred",
     labels=["y", "u_true / u_pred", "t"],
 )
-scatter_plot_3D(
+plot_3D(
     csv_file_name="../csv_data/wave_2D.csv",
     columns=["x", "t", "u_true", "u_pred"],
     x_axis="x",
