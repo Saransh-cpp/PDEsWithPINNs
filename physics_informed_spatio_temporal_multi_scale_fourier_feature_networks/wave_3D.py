@@ -38,7 +38,7 @@ def sol(x):
         * np.sin(m * np.pi * x[:, 0:1] / a)
         * np.sin(n * np.pi * x[:, 1:2] / b)
         * np.sin(l * np.pi * x[:, 2:3] / c)
-        * np.cos(np.pi * c * x[:, 3:4])  # (m^2/a^2  +  n^2/b^2  +  q^2/c^2) = 1
+        * np.cos(np.pi * c * x[:, 3:4])  # (m^2/a^2  +  n^2/b^2  +  l^2/c^2) = 1
     )
 
 
