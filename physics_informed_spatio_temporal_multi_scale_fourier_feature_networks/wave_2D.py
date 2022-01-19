@@ -77,14 +77,14 @@ data = dde.data.TimePDE(
 )
 
 net = dde.nn.STMsFFN(
-    [3] + [100] * 3 + [300] * 2 + [100] * 2 + [1],
+    [3] + [100] * 2 + [300] * 2 + [100] * 2 + [1],
     "tanh",
     "Glorot uniform",
     sigmas_x=[50, 100, 200],
     sigmas_t=[50, 100, 200],
 )
 
-net.apply_feature_transform(lambda x: (x - 0.5) * 2 * np.sqrt(3))
+net.apply_feature_transform(lambda x: x * 10)
 
 model = dde.Model(data, net)
 initial_losses = get_initial_loss(model)
