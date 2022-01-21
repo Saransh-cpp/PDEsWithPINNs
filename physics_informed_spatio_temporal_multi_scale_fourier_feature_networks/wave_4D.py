@@ -12,7 +12,7 @@ from dat_to_csv import dat_to_csv
 
 
 c = 10  # wave equation constant
-C = 64 / (np.pi ** 3) # Fourier constant
+C = 64 / (np.pi ** 3)  # Fourier constant
 
 l = 1
 n = 1
@@ -42,7 +42,9 @@ def sol(x):
         * np.sin(n * np.pi * x[:, 1:2] / b)
         * np.sin(l * np.pi * x[:, 2:3] / c)
         * np.sin(q * np.pi * x[:, 3:4] / d)
-        * np.cos(np.pi * c * x[:, 4:5])  # (m^2/a^2  +  n^2/b^2  +  l^2/c^2  +  q^2/d^2) = 1
+        * np.cos(
+            np.pi * c * x[:, 4:5]
+        )  # (m^2/a^2  +  n^2/b^2  +  l^2/c^2  +  q^2/d^2) = 1
     )
 
 
@@ -78,7 +80,7 @@ data = dde.data.TimePDE(
     num_boundary=80,
     num_initial=160,
     num_test=10000,
-    solution=sol
+    solution=sol,
 )
 
 net = dde.nn.STMsFFN(
@@ -150,4 +152,3 @@ plot_3D(
     u_pred="u_pred",
     labels=["w", "u_true / u_pred", "t"],
 )
-

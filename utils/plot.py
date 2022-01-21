@@ -4,7 +4,14 @@ import matplotlib.pyplot as plt
 
 
 def plot_3D(
-    csv_file_name, columns, x_axis, z_axis, u_true, u_pred, labels=["x", "y", "z"], plt_type="scatter",
+    csv_file_name,
+    columns,
+    x_axis,
+    z_axis,
+    u_true,
+    u_pred,
+    labels=["x", "y", "z"],
+    plt_type="scatter",
 ):
     df = pd.read_csv(csv_file_name, usecols=columns)
     x = df[x_axis]

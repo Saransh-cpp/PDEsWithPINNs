@@ -12,7 +12,7 @@ from dat_to_csv import dat_to_csv
 
 
 c = 10  # wave equation constant
-C = 16 / (np.pi ** 2) # Fourier constant
+C = 16 / (np.pi ** 2)  # Fourier constant
 
 l = 1
 n = 1

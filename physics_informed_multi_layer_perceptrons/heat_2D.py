@@ -16,7 +16,7 @@ n = 1
 m = 1
 a = 1
 b = 1
-C = 4 / np.pi
+C = 1
 
 
 def pde(x, u):
@@ -31,7 +31,7 @@ def func(x):
         C
         * np.sin(m * np.pi * x[:, 0:1] / a)
         * np.sin(n * np.pi * x[:, 1:2] / b)
-        * np.exp(-k * np.pi ** 2 * x[:, 2:3])  # (m^2/a^2  +  n^2/b^2) = 1
+        * np.exp(-(2 * k * (np.pi ** 2) * x[:, 2:3]))  # (m^2/a^2  +  n^2/b^2) = 2
     )
 
 
@@ -44,7 +44,7 @@ bc = dde.DirichletBC(
 )
 ic = dde.IC(
     spatio_temporal_domain,
-    lambda x: np.sin(n * np.pi * x[:, 0:1] / a),
+    lambda x: np.sin(np.pi * x[:, 0:1]) * np.sin(np.pi * x[:, 1:2]),
     lambda _, on_initial: on_initial,
 )
 
@@ -106,4 +106,13 @@ plot_3D(
     u_true="u_true",
     u_pred="u_pred",
     labels=["x", "u_true / u_pred", "t"],
+)
+plot_3D(
+    csv_file_name="../csv_data/heat_2D.csv",
+    columns=["x", "y", "u_true", "u_pred"],
+    x_axis="x",
+    z_axis="y",
+    u_true="u_true",
+    u_pred="u_pred",
+    labels=["x", "u_true / u_pred", "y"],
 )

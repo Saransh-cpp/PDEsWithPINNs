@@ -55,9 +55,7 @@ ic_1 = dde.IC(
     lambda _, on_initial: on_initial,
 )
 ic_2 = dde.OperatorBC(
-    geomtime,
-    lambda x, u, _: dde.grad.jacobian(u, x, i=0, j=1),
-    boundary_initial,
+    geomtime, lambda x, u, _: dde.grad.jacobian(u, x, i=0, j=1), boundary_initial,
 )
 
 data = dde.data.TimePDE(

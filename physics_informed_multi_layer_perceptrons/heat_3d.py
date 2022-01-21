@@ -20,7 +20,7 @@ a = 1
 b = 1
 c = 1
 
-C = 16 / (np.pi ** 2)
+C = 1
 
 
 def pde(x, u):
@@ -37,50 +37,36 @@ def func(x):
         * np.sin(m * np.pi * x[:, 0:1] / a)
         * np.sin(n * np.pi * x[:, 1:2] / b)
         * np.sin(q * np.pi * x[:, 2:3] / c)
-        * np.exp(-k * np.pi ** 2 * x[:, 3:4])  # (m^2/a^2  +  n^2/b^2  +  q^2/c^2) = 1
+        * np.exp(
+            -(3 * k * np.pi ** 2 * x[:, 3:4])
+        )  # (m^2/a^2  +  n^2/b^2  +  q^2/c^2) = 3
     )
-
-
-def boundary_up_and_bottom(x, on_boundary):
-    return on_boundary and (np.isclose(x[1], 1) or np.isclose(x[1], 0))
-
-
-def boundary_right_and_left(x, on_boundary):
-    return on_boundary and (np.isclose(x[0], 0) or np.isclose(x[0], 1))
-
-
-def boundary_front_and_back(x, on_boundary):
-    return on_boundary and (np.isclose(x[2], 0) or np.isclose(x[2], 1))
 
 
 spatial_domain = dde.geometry.Cuboid(xmin=[0, 0, 0], xmax=[a, b, c])
 temporal_domain = dde.geometry.TimeDomain(0, 1)
 spatio_temporal_domain = dde.geometry.GeometryXTime(spatial_domain, temporal_domain)
 
-d_bc_u_and_b = dde.DirichletBC(
-    spatio_temporal_domain, lambda x: 0, boundary_up_and_bottom
-)
-d_bc_f_and_b = dde.DirichletBC(
-    spatio_temporal_domain, lambda x: 0, boundary_front_and_back
-)
-d_bc_r_and_l = dde.DirichletBC(
-    spatio_temporal_domain, lambda X: 0, boundary_right_and_left
+d_bc = dde.DirichletBC(
+    spatio_temporal_domain, lambda x: 0, lambda _, on_boundary: on_boundary
 )
 
 ic = dde.IC(
     spatio_temporal_domain,
-    lambda x: np.sin(n * np.pi * x[:, 0:1] / a),
+    lambda x: np.sin(np.pi * x[:, 0:1])
+    * np.sin(np.pi * x[:, 1:2])
+    * np.sin(np.pi * x[:, 2:3]),
     lambda _, on_initial: on_initial,
 )
 
 data = dde.data.TimePDE(
     spatio_temporal_domain,
     pde,
-    [d_bc_u_and_b, d_bc_r_and_l, d_bc_f_and_b, ic],
+    [d_bc, ic],
     num_domain=2540,
-    num_boundary=1000,
-    num_initial=1000,
-    num_test=2540,
+    num_boundary=360,
+    num_initial=360,
+    num_test=10000,
     solution=func,
 )
 
@@ -94,7 +80,7 @@ model = dde.Model(data, net)
 model.compile(
     "adam", lr=0.001, metrics=["l2 relative error"],
 )
-model.train(epochs=20000)
+model.train(epochs=10000)
 model.compile(
     "L-BFGS", metrics=["l2 relative error"],
 )

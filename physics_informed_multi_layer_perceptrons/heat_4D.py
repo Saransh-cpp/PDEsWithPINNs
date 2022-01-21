@@ -22,7 +22,7 @@ b = 1
 c = 1
 d = 1
 
-C = 64 / (np.pi ** 3)
+C = 1
 
 
 def pde(x, u):
@@ -42,8 +42,8 @@ def func(x):
         * np.sin(q * np.pi * x[:, 2:3] / c)
         * np.sin(l * np.pi * x[:, 3:4] / d)
         * np.exp(
-            -k * np.pi ** 2 * x[:, 4:5]
-        )  # (m^2/a^2  +  n^2/b^2  +  q^2/c^2  +  l^2/d^2) = 1
+            -(4 * k * np.pi ** 2 * x[:, 4:5])
+        )  # (m^2/a^2  +  n^2/b^2  +  q^2/c^2  +  l^2/d^2) = 4
     )
 
 
@@ -56,7 +56,10 @@ d_bc = dde.DirichletBC(
 )
 ic = dde.IC(
     spatio_temporal_domain,
-    lambda x: np.sin(n * np.pi * x[:, 0:1] / a),
+    lambda x: np.sin(np.pi * x[:, 0:1])
+    * np.sin(np.pi * x[:, 1:2])
+    * np.sin(np.pi * x[:, 2:3])
+    * np.sin(np.pi * x[:, 3:4]),
     lambda _, on_initial: on_initial,
 )
 
@@ -65,9 +68,9 @@ data = dde.data.TimePDE(
     pde,
     [d_bc, ic],
     num_domain=2540,
-    num_boundary=1000,
-    num_initial=1000,
-    num_test=2540,
+    num_boundary=360,
+    num_initial=360,
+    num_test=10000,
     solution=func,
 )
 
@@ -81,7 +84,7 @@ model = dde.Model(data, net)
 model.compile(
     "adam", lr=0.001, metrics=["l2 relative error"],
 )
-model.train(epochs=20000)
+model.train(epochs=10000)
 model.compile(
     "L-BFGS", metrics=["l2 relative error"],
 )
