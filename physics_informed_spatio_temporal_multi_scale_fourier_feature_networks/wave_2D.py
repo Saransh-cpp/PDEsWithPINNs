@@ -12,7 +12,7 @@ from dat_to_csv import dat_to_csv
 
 
 c = 10  # wave equation constant
-C = 4 / np.pi  # Fourier constant
+C = 1  # Fourier constant
 n = 1
 m = 1
 
@@ -33,7 +33,7 @@ def sol(x):
         C
         * np.sin(m * np.pi * x[:, 0:1] / a)
         * np.sin(n * np.pi * x[:, 1:2] / b)
-        * np.cos(np.pi * c * x[:, 2:3])  # (m^2/a^2  +  n^2/b^2) = 1
+        * np.cos(np.sqrt(2) * np.pi * c * x[:, 2:3])  # (m^2/a^2  +  n^2/b^2) = 2
     )
 
 
@@ -43,7 +43,7 @@ def boundary_init(x, _):
 
 def get_initial_loss(model):
     model.compile("adam", lr=0.001, metrics=["l2 relative error"])
-    losshistory, train_state = model.train(0)
+    losshistory, _ = model.train(0)
     return losshistory.loss_train[0]
 
 
@@ -56,7 +56,7 @@ d_bc = dde.DirichletBC(
 )
 ic = dde.IC(
     spatio_temporal_domain,
-    lambda x: np.sin(n * np.pi * x[:, 0:1] / a),
+    lambda x: np.sin(np.pi * x[:, 0:1]) * np.sin(np.pi * x[:, 1:2]),
     lambda _, on_initial: on_initial,
 )
 ic_2 = dde.OperatorBC(
@@ -82,8 +82,10 @@ net = dde.nn.STMsFFN(
     + [1],
     "tanh",
     "Glorot uniform",
-    sigmas_x=[100, 500, 1000, 1250, 1500],
-    sigmas_t=[100, 500, 1000, 1250, 1500, 2500, 3000],
+    # sigmas_x=[100, 250, 500, 1000, 1250],
+    # sigmas_t=[100, 250, 500, 1000, 1250, 1500, 2500],
+    sigmas_x=[100, 150, 200, 250, 500,],
+    sigmas_t=[100, 150, 200, 250, 500, 750, 1000],
 )
 
 net.apply_feature_transform(lambda x: x / 250)
@@ -95,11 +97,12 @@ model.compile(
     "adam",
     lr=0.001,
     metrics=["l2 relative error"],
-    decay=("inverse time", 2000, 0.9),
+    # decay=("inverse time", 5000, 0.9),
+    decay=("inverse time", 10000, 0.9),
     loss_weights=loss_weights,
 )
 pde_residual_resampler = dde.callbacks.PDEResidualResampler(period=1)
-losshistory, train_state = model.train(epochs=10000, callbacks=[pde_residual_resampler])
+losshistory, train_state = model.train(epochs=20000, callbacks=[pde_residual_resampler], display_every=500)
 
 dde.saveplot(
     losshistory,
