@@ -82,13 +82,11 @@ net = dde.nn.STMsFFN(
     + [1],
     "tanh",
     "Glorot uniform",
-    # sigmas_x=[100, 250, 500, 1000, 1250],
-    # sigmas_t=[100, 250, 500, 1000, 1250, 1500, 2500],
-    sigmas_x=[100, 150, 200, 250, 500,],
-    sigmas_t=[100, 150, 200, 250, 500, 750, 1000],
+    sigmas_x=[1000],
+    sigmas_t=[1000, 5500],
 )
 
-net.apply_feature_transform(lambda x: x / 250)
+net.apply_feature_transform(lambda x: x / 500)
 
 model = dde.Model(data, net)
 initial_losses = get_initial_loss(model)
@@ -97,12 +95,12 @@ model.compile(
     "adam",
     lr=0.001,
     metrics=["l2 relative error"],
-    # decay=("inverse time", 5000, 0.9),
-    decay=("inverse time", 10000, 0.9),
+    # decay=("inverse time", 50000, 0.9),
+    decay=("inverse time", 50000, 0.9),
     loss_weights=loss_weights,
 )
 pde_residual_resampler = dde.callbacks.PDEResidualResampler(period=1)
-losshistory, train_state = model.train(epochs=20000, callbacks=[pde_residual_resampler], display_every=500)
+losshistory, train_state = model.train(epochs=50000, callbacks=[pde_residual_resampler], display_every=500)
 
 dde.saveplot(
     losshistory,
