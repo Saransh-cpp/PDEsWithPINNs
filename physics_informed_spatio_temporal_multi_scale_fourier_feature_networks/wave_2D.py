@@ -78,12 +78,11 @@ data = dde.data.TimePDE(
 
 net = dde.nn.STMsFFN(
     [3] + [100] * 3
-    # + [300] * 2 + [100] * 2
     + [1],
     "tanh",
     "Glorot uniform",
     sigmas_x=[1000],
-    sigmas_t=[1000, 5500],
+    sigmas_t=[1000, 5400],
 )
 
 net.apply_feature_transform(lambda x: x / 500)
@@ -96,7 +95,7 @@ model.compile(
     lr=0.001,
     metrics=["l2 relative error"],
     # decay=("inverse time", 50000, 0.9),
-    decay=("inverse time", 50000, 0.9),
+    decay=("inverse time", 49000, 0.9),
     loss_weights=loss_weights,
 )
 pde_residual_resampler = dde.callbacks.PDEResidualResampler(period=1)
